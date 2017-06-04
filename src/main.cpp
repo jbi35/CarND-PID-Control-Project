@@ -34,7 +34,7 @@ int main()
 
   PID pid;
 
-  pid.Init(0.3,0.0,0.0); // TODO change values
+  pid.Init(0.102614,0.000389051,1.25284);
   // TODO: Initialize the pid variable.
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -62,13 +62,24 @@ int main()
           * another PID controller to control the speed!
           */
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+          //std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+
+          // uncomment the following lines to tweak the controller using the
+          // twiddle algorithm
+          // if(pid.IsTwiddleTimeIntervalComplete())
+          // {
+          //   pid.PrintCurrentSettings();
+          //   pid.DoTwiddleTweak();
+          //   pid.Restart(ws);
+          //   std::cout << " Updated Params" << std::endl;
+          //   pid.PrintCurrentSettings();
+          // }
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = 0.3;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          //std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {
